@@ -1,7 +1,7 @@
 ## AssetStudioCLI
 CLI version of AssetStudio Mod.
-- Supported asset types: `Texture2D`, `Sprite`, `TextAsset`, `MonoBehaviour`, `Font`, `Shader`, `MovieTexture`, `AudioClip`, `VideoClip`
-- *There are no plans to add support for `Mesh`/`AnimationClip`/`Animator` for now*
+- Supported asset types: `Texture2D`, `Sprite`, `TextAsset`, `MonoBehaviour`, `Font`, `Shader`, `MovieTexture`, `AudioClip`, `VideoClip`, `Mesh`
+- *There are no plans to add support for `AnimationClip`/`Animator` for now*
 
 ### Usage
 ```
@@ -28,7 +28,7 @@ General Options:
 
   -t, --asset-type <value(s)>   Specify asset type(s) to export
                                 <Value(s): tex2d, sprite, textAsset, monoBehaviour, font, shader, movieTexture,
-                                audio, video | all(default)>
+                                audio, video, mesh | all(default)>
                                 All - export all asset types, which are listed in the values
                                 *To specify multiple asset types, write them separated by ',' or ';' without spaces
                                 Examples: "-t sprite" or "-t all" or "-t tex2d,sprite,audio" or "-t tex2d;sprite;font"

@@ -145,7 +145,7 @@ namespace AssetStudioCLI.Options
                 optionName: "-t, --asset-type <value(s)>",
                 optionDescription: "Specify asset type(s) to export\n" +
                     "<Value(s): tex2d, sprite, textAsset, monoBehaviour, font, shader, movieTexture,\n" +
-                    "audio, video | all(default)>\n" +
+                    "audio, video, mesh | all(default)>\n" +
                     "All - export all asset types, which are listed in the values\n" +
                     "*To specify multiple asset types, write them separated by ',' or ';' without spaces\n" +
                     "Examples: \"-t sprite\" or \"-t all\" or \"-t tex2d,sprite,audio\" or \"-t tex2d;sprite;font\"\n",
@@ -456,6 +456,9 @@ namespace AssetStudioCLI.Options
                                         break;
                                     case "movietexture":
                                         o_exportAssetTypes.Value.Add(ClassIDType.MovieTexture);
+                                        break;
+                                    case "mesh":
+                                        o_exportAssetTypes.Value.Add(ClassIDType.Mesh);
                                         break;
                                     case "all":
                                         o_exportAssetTypes.Value = supportedAssetTypes;
