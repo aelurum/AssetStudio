@@ -123,6 +123,7 @@ namespace AssetStudioCLI.Options
                 ClassIDType.AudioClip,
                 ClassIDType.VideoClip,
                 ClassIDType.MovieTexture,
+                ClassIDType.Mesh,
             };
 
             #region Init General Options
