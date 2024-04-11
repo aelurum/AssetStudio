@@ -57,14 +57,19 @@ namespace Arknights
                     {
                         var faceImage = m_Texture2D.ConvertToImage(true);
                         var faceAlpha = avgSprite.FaceSpriteAlphaTexture.ConvertToImage(true);
+
+                        tex = avgSprite.FullTexture.ConvertToImage(true);
+                        var facePos = tex.Width == 512 ? avgSprite.FacePos / 2 : avgSprite.FacePos; // ?
+                        var faceSize = tex.Width == 512 ? avgSprite.FaceSize / 2 : avgSprite.FaceSize;
+
                         if (new Size(faceImage.Width, faceImage.Height) != avgSprite.FaceSize)
                         {
-                            faceImage.Mutate(x => x.Resize(new ResizeOptions { Size = avgSprite.FaceSize, Sampler = KnownResamplers.Lanczos3, Mode = ResizeMode.Stretch }));
-                            faceAlpha.Mutate(x => x.Resize(new ResizeOptions { Size = avgSprite.FaceSize, Sampler = KnownResamplers.Lanczos3, Mode = ResizeMode.Stretch }));
+                            faceImage.Mutate(x => x.Resize(new ResizeOptions { Size = faceSize, Sampler = KnownResamplers.Lanczos3, Mode = ResizeMode.Stretch }));
+                            faceAlpha.Mutate(x => x.Resize(new ResizeOptions { Size = faceSize, Sampler = KnownResamplers.Lanczos3, Mode = ResizeMode.Stretch }));
                         }
-                        tex = avgSprite.FullTexture.ConvertToImage(true);
-                        tex.Mutate(x => x.DrawImage(faceImage, avgSprite.FacePos, opacity: 1f));
-                        alphaTex.Mutate(x => x.DrawImage(faceAlpha, avgSprite.FacePos, opacity: 1f));
+                        
+                        tex.Mutate(x => x.DrawImage(faceImage, facePos, opacity: 1f));
+                        alphaTex.Mutate(x => x.DrawImage(faceAlpha, facePos, opacity: 1f));
                     }
                     else
                     {
