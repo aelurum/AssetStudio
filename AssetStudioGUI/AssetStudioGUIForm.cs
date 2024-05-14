@@ -2714,7 +2714,7 @@ namespace AssetStudioGUI
             GL.GenVertexArrays(1, out vao);
             GL.BindVertexArray(vao);
             CreateVBO(out var vboPositions, vertexData, attributeVertexPosition);
-            if (normalMode == 0)
+            if (normalMode == 1)
             {
                 CreateVBO(out var vboNormals, normal2Data, attributeNormalDirection);
             }

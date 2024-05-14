@@ -589,6 +589,30 @@ namespace AssetStudio
                 }
             }
 
+            // Last resort
+#if DEBUG
+            Console.WriteLine($"Mesh Renderer had no mesh attached during export, resorting to dumb name search among assets");
+#endif
+            GameObject go;
+            if (meshR.m_GameObject.TryGet(out go))
+            {
+                string meshR_originalName = go.m_Name;
+                foreach (var serializedFile in go.assetsFile.assetsManager.assetsFileList)
+                {
+                    //var nameRelatedMesh = serializedFile.Objects.FirstOrDefault(o => (o is Mesh) && (o as NamedObject).m_Name == meshR_originalName, null);
+                    // It's not possible to hot-reload lambdas with captures.
+                    // I'm not gonna reload 50 GB worth of assets in RAM in debug again for the code to look fancy.
+                    foreach (var o in serializedFile.Objects)
+                        if (o is Mesh && (o as Mesh).m_Name == meshR_originalName)
+                        {
+#if DEBUG
+                            Console.WriteLine($"Found a replacement Mesh succesfully for the component {meshR_originalName} which has no mesh attached");
+#endif
+                            return o as Mesh;
+                        }
+                }
+            }
+
             return null;
         }
 
