@@ -17,7 +17,7 @@ namespace AssetStudio
         protected BuildType buildType;
         [JsonIgnore]
         public BuildTarget platform;
-        [JsonIgnore]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ClassIDType type;
         [JsonIgnore]
         public SerializedType serializedType;
