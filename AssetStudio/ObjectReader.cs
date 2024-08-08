@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace AssetStudio
 {
@@ -12,6 +8,7 @@ namespace AssetStudio
         public long m_PathID;
         public long byteStart;
         public uint byteSize;
+        public int classID;
         public ClassIDType type;
         public SerializedType serializedType;
         public BuildTarget platform;
@@ -26,6 +23,7 @@ namespace AssetStudio
             m_PathID = objectInfo.m_PathID;
             byteStart = objectInfo.byteStart;
             byteSize = objectInfo.byteSize;
+            classID = objectInfo.classID;
             if (Enum.IsDefined(typeof(ClassIDType), objectInfo.classID))
             {
                 type = (ClassIDType)objectInfo.classID;

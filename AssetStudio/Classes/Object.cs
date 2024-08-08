@@ -17,9 +17,11 @@ namespace AssetStudio
         protected BuildType buildType;
         [JsonIgnore]
         public BuildTarget platform;
+        [JsonIgnore]
         public ClassIDType type;
         [JsonIgnore]
         public SerializedType serializedType;
+        public int classID;
         public uint byteSize;
         private static JsonSerializerOptions jsonOptions;
 
@@ -49,6 +51,7 @@ namespace AssetStudio
             buildType = reader.buildType;
             platform = reader.platform;
             serializedType = reader.serializedType;
+            classID = reader.classID;
             byteSize = reader.byteSize;
 
             if (platform == BuildTarget.NoTarget)
