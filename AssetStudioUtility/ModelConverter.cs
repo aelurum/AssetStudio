@@ -570,6 +570,8 @@ namespace AssetStudio
 
         private static Mesh GetMesh(Renderer meshR)
         {
+            GameObject m_GameObject;
+
             if (meshR is SkinnedMeshRenderer sMesh)
             {
                 if (sMesh.m_Mesh.TryGet(out var m_Mesh))
@@ -579,7 +581,7 @@ namespace AssetStudio
             }
             else
             {
-                meshR.m_GameObject.TryGet(out var m_GameObject);
+                meshR.m_GameObject.TryGet(out m_GameObject);
                 if (m_GameObject.m_MeshFilter != null)
                 {
                     if (m_GameObject.m_MeshFilter.m_Mesh.TryGet(out var m_Mesh))
@@ -587,6 +589,23 @@ namespace AssetStudio
                         return m_Mesh;
                     }
                 }
+            }
+
+            // Last resort
+            if (meshR.m_GameObject.TryGet(out m_GameObject))
+            {
+                Logger.Debug("Mesh Renderer had no Mesh attached, trying to find Mesh by name..");
+                var meshR_originalName = m_GameObject.m_Name;
+                foreach (var serializedFile in m_GameObject.assetsFile.assetsManager.assetsFileList)
+                {
+                    var nameRelatedMesh = (Mesh)serializedFile.Objects.Find(x => x is Mesh m_Mesh && m_Mesh.m_Name == meshR_originalName);
+                    if (nameRelatedMesh != null)
+                    {
+                        Logger.Debug($"Successfully found a Mesh replacement for the component \"{meshR_originalName}\"");
+                        return nameRelatedMesh;
+                    }
+                }
+                Logger.Debug($"No Mesh was found for the component \"{meshR_originalName}\"");
             }
 
             return null;
