@@ -708,16 +708,17 @@ namespace AssetStudio
                                 {
                                     m_Sprite.m_SpriteAtlas.Set(m_SpriteAtlas);
                                 }
-                                else if (m_Sprite.m_SpriteAtlas.TryGet(out var m_SpriteAtlaOld))
+                                else if (m_Sprite.m_SpriteAtlas.TryGet(out var m_SpriteAtlasOld))
                                 {
-                                    if (m_SpriteAtlaOld.m_IsVariant)
+                                    if (m_SpriteAtlasOld.m_IsVariant)
                                     {
                                         m_Sprite.m_SpriteAtlas.Set(m_SpriteAtlas);
                                     }
                                 }
                                 else
                                 {
-                                    Logger.Warning($"\"{m_Sprite.m_Name}\": Sprite loading error. SpriteAtlas with PathID: \"{m_Sprite.m_SpriteAtlas.m_PathID}\" was not found.");
+                                    Logger.Debug($"\"{m_Sprite.m_Name}\": The actual SpriteAtlas PathID \"{m_SpriteAtlas.m_PathID}\" does not match the specified one \"{m_Sprite.m_SpriteAtlas.m_PathID}\".");
+                                    m_Sprite.m_SpriteAtlas.Set(m_SpriteAtlas);
                                 }
                             }
                         }
