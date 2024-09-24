@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AssetStudio
+﻿namespace AssetStudio
 {
     public class StaticBatchInfo
     {
@@ -57,6 +52,15 @@ namespace AssetStudio
                     if (version >= 2020) //2020.1 and up
                     {
                         var m_RayTraceProcedural = reader.ReadByte();
+                    }
+                    if (version >= (2023, 2)) //2023.2 and up
+                    {
+                        var m_RayTracingAccelStructBuildFlagsOverride = reader.ReadByte();
+                        var m_RayTracingAccelStructBuildFlags = reader.ReadByte();
+                    }
+                    if (version >= (2023, 3)) //2023.3 and up
+                    {
+                        var m_SmallMeshCulling = reader.ReadByte();
                     }
                     reader.AlignStream();
                 }
@@ -128,7 +132,7 @@ namespace AssetStudio
                 var m_UseLightProbes = reader.ReadBoolean();
                 reader.AlignStream();
 
-                if (version >= 5)//5.0 and up
+                if (version >= 5) //5.0 and up
                 {
                     var m_ReflectionProbeUsage = reader.ReadInt32();
                 }

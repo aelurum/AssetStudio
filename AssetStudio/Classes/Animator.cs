@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AssetStudio
+﻿namespace AssetStudio
 {
     public sealed class Animator : Behaviour
     {
@@ -34,6 +29,10 @@ namespace AssetStudio
                 if (version >= (2021, 2)) //2021.2 and up
                 {
                     var m_StabilizeFeet = reader.ReadBoolean();
+                }
+                if (version >= (2023, 1)) //2023.1 and up
+                {
+                    var m_AnimatePhysics = reader.ReadBoolean();
                 }
                 reader.AlignStream();
             }

@@ -45,7 +45,6 @@ namespace AssetStudio
 
         public AnimationCurve(ObjectReader reader, Func<T> readerFunc)
         {
-            var version = reader.version;
             int numCurves = reader.ReadInt32();
             m_Curve = new Keyframe<T>[numCurves];
             for (int i = 0; i < numCurves; i++)
@@ -55,7 +54,7 @@ namespace AssetStudio
 
             m_PreInfinity = reader.ReadInt32();
             m_PostInfinity = reader.ReadInt32();
-            if (version >= (5, 3)) //5.3 and up
+            if (reader.version >= (5, 3)) //5.3 and up
             {
                 m_RotationOrder = reader.ReadInt32();
             }
@@ -317,13 +316,12 @@ namespace AssetStudio
 
         public FloatCurve(ObjectReader reader)
         {
-            var version = reader.version;
             curve = new AnimationCurve<float>(reader, reader.ReadSingle);
             attribute = reader.ReadAlignedString();
             path = reader.ReadAlignedString();
             classID = (ClassIDType)reader.ReadInt32();
             script = new PPtr<MonoScript>(reader);
-            if (version >= (2022, 2)) //2022.2 and up
+            if (reader.version >= (2022, 2)) //2022.2 and up
             {
                 flags = reader.ReadInt32();
             }
@@ -357,7 +355,6 @@ namespace AssetStudio
 
         public PPtrCurve(ObjectReader reader)
         {
-            var version = reader.version;
             int numCurves = reader.ReadInt32();
             curve = new PPtrKeyframe[numCurves];
             for (int i = 0; i < numCurves; i++)
@@ -369,7 +366,7 @@ namespace AssetStudio
             path = reader.ReadAlignedString();
             classID = reader.ReadInt32();
             script = new PPtr<MonoScript>(reader);
-            if (version >= (2022, 2)) //2022.2 and up
+            if (reader.version >= (2022, 2)) //2022.2 and up
             {
                 flags = reader.ReadInt32();
             }
@@ -506,8 +503,18 @@ namespace AssetStudio
 
         public StreamedClip(ObjectReader reader)
         {
+            var version = reader.version;
             data = reader.ReadUInt32Array();
-            curveCount = reader.ReadUInt32();
+            if (version.IsInRange((2022, 3, 19), 2023) //2022.3.19f1 to 2023
+                || version >= (2023, 2, 8)) //2023.2.8f1 and up
+            {
+                curveCount = reader.ReadUInt16();
+                var discreteCurveCount = reader.ReadUInt16();
+            }
+            else
+            {
+                curveCount = reader.ReadUInt32();
+            }
         }
 
         public class StreamedCurveKey
@@ -644,9 +651,8 @@ namespace AssetStudio
 
         public ValueConstant(ObjectReader reader)
         {
-            var version = reader.version;
             m_ID = reader.ReadUInt32();
-            if (version < (5, 5)) //5.5 down
+            if (reader.version < (5, 5)) //5.5 down
             {
                 m_TypeID = reader.ReadUInt32();
             }
@@ -872,6 +878,7 @@ namespace AssetStudio
         public byte customType;
         public byte isPPtrCurve;
         public byte isIntCurve;
+        public byte isSerializeReferenceCurve;
 
         public GenericBinding() { }
 
@@ -894,6 +901,10 @@ namespace AssetStudio
             if (version >= (2022, 1)) //2022.1 and up
             {
                 isIntCurve = reader.ReadByte();
+            }
+            if (version >= (2022, 2)) //2022.2 and up
+            {
+                isSerializeReferenceCurve = reader.ReadByte();
             }
             reader.AlignStream();
         }
@@ -973,14 +984,12 @@ namespace AssetStudio
 
         public AnimationEvent(ObjectReader reader)
         {
-            var version = reader.version;
-
             time = reader.ReadSingle();
             functionName = reader.ReadAlignedString();
             data = reader.ReadAlignedString();
             objectReferenceParameter = new PPtr<Object>(reader);
             floatParameter = reader.ReadSingle();
-            if (version >= 3) //3 and up
+            if (reader.version >= 3) //3 and up
             {
                 intParameter = reader.ReadInt32();
             }
@@ -1052,8 +1061,7 @@ namespace AssetStudio
             else if (version >= 4)//4.0 and up
             {
                 m_AnimationType = (AnimationType)reader.ReadInt32();
-                if (m_AnimationType == AnimationType.Legacy)
-                    m_Legacy = true;
+                m_Legacy = m_AnimationType == AnimationType.Legacy;
             }
             else
             {

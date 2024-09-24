@@ -563,6 +563,9 @@ namespace AssetStudio
                             case ClassIDType.Avatar:
                                 obj = new Avatar(objectReader);
                                 break;
+                            case ClassIDType.BuildSettings:
+                                obj = new BuildSettings(objectReader);
+                                break;
                             case ClassIDType.Font:
                                 obj = new Font(objectReader);
                                 break;
