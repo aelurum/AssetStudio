@@ -14,7 +14,6 @@ namespace AssetStudio
         public long m_PathID;
         [JsonIgnore]
         public UnityVersion version;
-        protected BuildType buildType;
         [JsonIgnore]
         public BuildTarget platform;
         [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -48,7 +47,6 @@ namespace AssetStudio
             type = reader.type;
             m_PathID = reader.m_PathID;
             version = reader.version;
-            buildType = reader.buildType;
             platform = reader.platform;
             serializedType = reader.serializedType;
             classID = reader.classID;

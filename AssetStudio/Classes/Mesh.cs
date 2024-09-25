@@ -546,7 +546,7 @@ namespace AssetStudio
 
                 //Unity fixed it in 2017.3.1p1 and later versions
                 if (version >= (2017, 4) //2017.4
-                    || version == (2017, 3, 1) && buildType.IsPatch //fixed after 2017.3.1px
+                    || version == (2017, 3, 1) && version.IsPatch //fixed after 2017.3.1px
                     || version == (2017, 3) && m_MeshCompression == 0)//2017.3.xfx with no compression
                 {
                     var m_IndexFormat = reader.ReadInt32();

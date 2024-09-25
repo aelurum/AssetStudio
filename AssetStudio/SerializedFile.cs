@@ -14,7 +14,6 @@ namespace AssetStudio
         public string originalPath;
         public string fileName;
         public UnityVersion version = new UnityVersion();
-        public BuildType buildType;
         public List<Object> Objects;
         public Dictionary<long, Object> ObjectsDic;
 
@@ -222,7 +221,6 @@ namespace AssetStudio
             if (unityVer != null && !unityVer.IsStripped)
             {
                 unityVersion = unityVer.FullVersion;
-                buildType = new BuildType(unityVer.BuildType);
                 version = unityVer;
             }
         }

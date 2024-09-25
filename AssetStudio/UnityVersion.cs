@@ -4,6 +4,16 @@ using System.Text.RegularExpressions;
 
 namespace AssetStudio
 {
+    public static class BuildTypes
+    {
+        public static readonly string
+            Alpha = "a",
+            Beta = "b",
+            Final = "f",
+            Patch = "p",
+            Tuanjie = "t";
+    }
+
     public class UnityVersion : IComparable
     {
         public int Major { get; }
@@ -14,6 +24,10 @@ namespace AssetStudio
         public string FullVersion { get; }
 
         public bool IsStripped => this == (0, 0, 0);
+        public bool IsAlpha => BuildType == BuildTypes.Alpha;
+        public bool IsBeta => BuildType == BuildTypes.Beta;
+        public bool IsPatch => BuildType == BuildTypes.Patch;
+        public bool IsTuanjie => BuildType == BuildTypes.Tuanjie;
 
         public UnityVersion(string version)
         {
@@ -47,7 +61,7 @@ namespace AssetStudio
             if (!IsStripped)
             {
                 Build = 1;
-                BuildType = "f";
+                BuildType = BuildTypes.Final;
                 FullVersion += $"{BuildType}{Build}";
             }
         }
