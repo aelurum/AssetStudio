@@ -266,7 +266,7 @@ namespace AssetStudioGUI
             var typeMap = await Task.Run(() => BuildClassStructure());
             productName = string.IsNullOrEmpty(productName) ? "no productName" : productName;
 
-            Text = $"{guiTitle} - {productName} - {assetsManager.assetsFileList[0].unityVersion} - {assetsManager.assetsFileList[0].m_TargetPlatform}";
+            Text = $"{guiTitle} - {productName} - {assetsManager.assetsFileList[0].version} - {assetsManager.assetsFileList[0].m_TargetPlatform}";
 
             assetListView.VirtualListSize = visibleAssets.Count;
 
@@ -278,7 +278,7 @@ namespace AssetStudioGUI
             classesListView.BeginUpdate();
             foreach (var version in typeMap)
             {
-                var versionGroup = new ListViewGroup(version.Key);
+                var versionGroup = new ListViewGroup(version.Key.FullVersion);
                 classesListView.Groups.Add(versionGroup);
 
                 foreach (var uclass in version.Value)

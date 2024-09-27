@@ -270,7 +270,7 @@ namespace AssetStudio
                     assetsFile.originalPath = originalPath;
                     if (assetBundleUnityVer != null && assetsFile.header.m_Version < SerializedFileFormatVersion.Unknown_7)
                     {
-                        assetsFile.SetVersion(assetBundleUnityVer);
+                        assetsFile.version = assetBundleUnityVer;
                     }
                     CheckStrippedVersion(assetsFile, assetBundleUnityVer);
                     assetsFileList.Add(assetsFile);
@@ -487,7 +487,7 @@ namespace AssetStudio
             }
             if (specifiedUnityVersion != null)
             {
-                assetsFile.SetVersion(SpecifyUnityVersion);
+                assetsFile.version = SpecifyUnityVersion;
             }
         }
 

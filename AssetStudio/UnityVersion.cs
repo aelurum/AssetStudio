@@ -38,7 +38,7 @@ namespace AssetStudio
             {
                 int[] ver = Regex.Matches(version, @"\d+").Cast<Match>().Select(x => int.Parse(x.Value)).ToArray();
                 (Major, Minor, Patch) = (ver[0], ver[1], ver[2]);
-                if (ver.Length == 4)
+                if (ver.Length >= 4)
                     Build = ver[3];
                 FullVersion = version;
             }

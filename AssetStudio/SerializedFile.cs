@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace AssetStudio
 {
@@ -19,7 +17,6 @@ namespace AssetStudio
 
         public SerializedFileHeader header;
         private byte m_FileEndianess;
-        public string unityVersion = "2.5.0f5";
         public BuildTarget m_TargetPlatform = BuildTarget.UnknownPlatform;
         private bool m_EnableTypeTree = true;
         public List<SerializedType> m_Types;
@@ -71,8 +68,11 @@ namespace AssetStudio
             }
             if (header.m_Version >= SerializedFileFormatVersion.Unknown_7)
             {
-                unityVersion = reader.ReadStringToNull();
-                SetVersion(new UnityVersion(unityVersion));
+                version = new UnityVersion(reader.ReadStringToNull());
+            }
+            else
+            {
+                version = new UnityVersion(2, 5, 0);
             }
             if (header.m_Version >= SerializedFileFormatVersion.Unknown_8)
             {
@@ -214,15 +214,6 @@ namespace AssetStudio
             }
 
             //reader.AlignStream(16);
-        }
-
-        public void SetVersion(UnityVersion unityVer)
-        {
-            if (unityVer != null && !unityVer.IsStripped)
-            {
-                unityVersion = unityVer.FullVersion;
-                version = unityVer;
-            }
         }
 
         private SerializedType ReadSerializedType(bool isRefType)

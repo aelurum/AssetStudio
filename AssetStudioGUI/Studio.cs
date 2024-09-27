@@ -429,12 +429,12 @@ namespace AssetStudioGUI
             return (productName, treeNodeCollection);
         }
 
-        public static Dictionary<string, SortedDictionary<int, TypeTreeItem>> BuildClassStructure()
+        public static Dictionary<UnityVersion, SortedDictionary<int, TypeTreeItem>> BuildClassStructure()
         {
-            var typeMap = new Dictionary<string, SortedDictionary<int, TypeTreeItem>>();
+            var typeMap = new Dictionary<UnityVersion, SortedDictionary<int, TypeTreeItem>>();
             foreach (var assetsFile in assetsManager.assetsFileList)
             {
-                if (typeMap.TryGetValue(assetsFile.unityVersion, out var curVer))
+                if (typeMap.TryGetValue(assetsFile.version, out var curVer))
                 {
                     foreach (var type in assetsFile.m_Types.Where(x => x.m_Type != null))
                     {
@@ -458,7 +458,7 @@ namespace AssetStudioGUI
                         }
                         items[key] = new TypeTreeItem(key, type.m_Type);
                     }
-                    typeMap.Add(assetsFile.unityVersion, items);
+                    typeMap.Add(assetsFile.version, items);
                 }
             }
             return typeMap;
