@@ -8,6 +8,7 @@ namespace AssetStudio
     public class AudioClipConverter
     {
         public bool IsSupport => m_AudioClip.IsConvertSupport();
+        public bool IsLegacy => m_AudioClip.IsLegacyConvertSupport();
 
         private AudioClip m_AudioClip;
         private static FMOD.System system;
@@ -84,8 +85,32 @@ namespace AssetStudio
                 return null;
             var buffer = new byte[len1 + 44];
             //添加wav头
+            WriteWavHeader(buffer, len1, sampleRate, channels, bits);
+            Marshal.Copy(ptr1, buffer, 44, (int)len1);
+            result = sound.unlock(ptr1, ptr2, len1, len2);
+            if (result != RESULT.OK)
+                return null;
+            return buffer;
+        }
+
+        public byte[] RawAudioClipToWav(out string debugLog)
+        {
+            var audioSize = m_AudioClip.m_Size;
+            var channels = m_AudioClip.m_Channels;
+            var sampleRate = m_AudioClip.m_Frequency;
+            var bits = 16;
+
+            debugLog = "[Legacy wav converter] Generating wav header..\n";
+            var buffer = new byte[audioSize + 44];
+            m_AudioClip.m_AudioData.GetData(buffer, 44);
+            WriteWavHeader(buffer, audioSize, sampleRate, channels, bits);
+            return buffer;
+        }
+
+        private static void WriteWavHeader(byte[] buffer, long size, int sampleRate, int channels, int bits)
+        {
             Encoding.ASCII.GetBytes("RIFF").CopyTo(buffer, 0);
-            BitConverter.GetBytes(len1 + 36).CopyTo(buffer, 4);
+            BitConverter.GetBytes(size + 36).CopyTo(buffer, 4);
             Encoding.ASCII.GetBytes("WAVEfmt ").CopyTo(buffer, 8);
             BitConverter.GetBytes(16).CopyTo(buffer, 16);
             BitConverter.GetBytes((short)1).CopyTo(buffer, 20);
@@ -95,12 +120,7 @@ namespace AssetStudio
             BitConverter.GetBytes((short)(channels * bits / 8)).CopyTo(buffer, 32);
             BitConverter.GetBytes((short)bits).CopyTo(buffer, 34);
             Encoding.ASCII.GetBytes("data").CopyTo(buffer, 36);
-            BitConverter.GetBytes(len1).CopyTo(buffer, 40);
-            Marshal.Copy(ptr1, buffer, 44, (int)len1);
-            result = sound.unlock(ptr1, ptr2, len1, len2);
-            if (result != RESULT.OK)
-                return null;
-            return buffer;
+            BitConverter.GetBytes(size).CopyTo(buffer, 40);
         }
 
         public string GetExtensionName()
@@ -200,6 +220,11 @@ namespace AssetStudio
                         return false;
                 }
             }
+        }
+
+        public static bool IsLegacyConvertSupport(this AudioClip m_AudioClip)
+        {
+            return m_AudioClip.version < (2, 6) && m_AudioClip.m_Format != 0x05;
         }
     }
 }

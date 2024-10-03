@@ -984,14 +984,18 @@ namespace AssetStudio
 
         public AnimationEvent(ObjectReader reader)
         {
+            var version = reader.version;
             time = reader.ReadSingle();
             functionName = reader.ReadAlignedString();
             data = reader.ReadAlignedString();
-            objectReferenceParameter = new PPtr<Object>(reader);
-            floatParameter = reader.ReadSingle();
-            if (reader.version >= 3) //3 and up
+            if (version >= (2, 6)) //2.6 and up
             {
-                intParameter = reader.ReadInt32();
+                objectReferenceParameter = new PPtr<Object>(reader);
+                floatParameter = reader.ReadSingle();
+                if (version >= 3) //3 and up
+                {
+                    intParameter = reader.ReadInt32();
+                }
             }
             messageOptions = reader.ReadInt32();
         }
@@ -1067,7 +1071,10 @@ namespace AssetStudio
             {
                 m_Legacy = true;
             }
-            m_Compressed = reader.ReadBoolean();
+            if (version >= (2, 6)) //2.6 and up
+            {
+                m_Compressed = reader.ReadBoolean();
+            }
             if (version >= (4, 3))//4.3 and up
             {
                 m_UseHighQualityCurve = reader.ReadBoolean();
@@ -1080,11 +1087,14 @@ namespace AssetStudio
                 m_RotationCurves[i] = new QuaternionCurve(reader);
             }
 
-            int numCRCurves = reader.ReadInt32();
-            m_CompressedRotationCurves = new CompressedAnimationCurve[numCRCurves];
-            for (int i = 0; i < numCRCurves; i++)
+            if (version >= (2, 6)) //2.6 and up
             {
-                m_CompressedRotationCurves[i] = new CompressedAnimationCurve(reader);
+                int numCRCurves = reader.ReadInt32();
+                m_CompressedRotationCurves = new CompressedAnimationCurve[numCRCurves];
+                for (int i = 0; i < numCRCurves; i++)
+                {
+                    m_CompressedRotationCurves[i] = new CompressedAnimationCurve(reader);
+                }
             }
 
             if (version >= (5, 3))//5.3 and up
@@ -1129,7 +1139,10 @@ namespace AssetStudio
             }
 
             m_SampleRate = reader.ReadSingle();
-            m_WrapMode = reader.ReadInt32();
+            if (version >= (2, 6)) //2.6 and up
+            {
+                m_WrapMode = reader.ReadInt32();
+            }
             if (version >= (3, 4)) //3.4 and up
             {
                 m_Bounds = new AABB(reader);
