@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace AssetStudio
 {
@@ -15,6 +15,7 @@ namespace AssetStudio
         public GLTextureSettings m_TextureSettings;
         public int m_ImageCount;
         public byte[] m_PlatformBlob;
+        [JsonPropertyName("image data")]
         public ResourceReader image_data;
         public StreamingInfo m_StreamData;
 
@@ -53,9 +54,9 @@ namespace AssetStudio
             byteSize = (uint)(m_Width * m_Height) * 4;
         }
 
-        public Texture2D(ObjectReader reader, IDictionary typeDict, JsonSerializerOptions jsonOptions) : base(reader)
+        public Texture2D(ObjectReader reader, byte[] type, JsonSerializerOptions jsonOptions) : base(reader)
         {
-            var parsedTex2d = JsonSerializer.Deserialize<Texture2D>(JsonSerializer.SerializeToUtf8Bytes(typeDict, jsonOptions), jsonOptions);
+            var parsedTex2d = JsonSerializer.Deserialize<Texture2D>(type, jsonOptions);
             m_Width = parsedTex2d.m_Width;
             m_Height = parsedTex2d.m_Height;
             m_CompleteImageSize = parsedTex2d.m_CompleteImageSize;
@@ -70,7 +71,6 @@ namespace AssetStudio
             image_data = !string.IsNullOrEmpty(m_StreamData?.path)
                 ? new ResourceReader(m_StreamData.path, assetsFile, m_StreamData.offset, m_StreamData.size)
                 : new ResourceReader(reader, parsedTex2d.image_data.Offset, parsedTex2d.image_data.Size);
-            typeDict.Clear();
         }
 
         public Texture2D(ObjectReader reader) : base(reader)

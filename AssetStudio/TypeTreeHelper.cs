@@ -3,11 +3,24 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace AssetStudio
 {
     public static class TypeTreeHelper
     {
+        private static readonly JsonSerializerOptions JsonOptions;
+        static TypeTreeHelper()
+        {
+            JsonOptions = new JsonSerializerOptions
+            {
+                NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                IncludeFields = true,
+            };
+        }
+
         public static string ReadTypeString(TypeTree m_Type, ObjectReader reader)
         {
             reader.Reset();
@@ -163,6 +176,14 @@ namespace AssetStudio
                 reader.AlignStream();
         }
 
+        public static byte[] ReadTypeByteArray(TypeTree m_Types, ObjectReader reader)
+        {
+            var type = ReadType(m_Types, reader);
+            var bytes = JsonSerializer.SerializeToUtf8Bytes(type, JsonOptions);
+            type.Clear();
+            return bytes;
+        }
+
         public static OrderedDictionary ReadType(TypeTree m_Types, ObjectReader reader)
         {
             reader.Reset();
@@ -171,7 +192,7 @@ namespace AssetStudio
             for (int i = 1; i < m_Nodes.Count; i++)
             {
                 var m_Node = m_Nodes[i];
-                var varNameStr = m_Node.m_Name.Replace("image data", "image_data");
+                var varNameStr = m_Node.m_Name;
                 obj[varNameStr] = ReadValue(m_Nodes, reader, ref i);
             }
             var readed = reader.Position - reader.byteStart;

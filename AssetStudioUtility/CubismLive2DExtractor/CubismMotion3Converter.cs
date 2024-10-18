@@ -7,7 +7,6 @@ namespace CubismLive2DExtractor
 {
     class CubismMotion3Converter
     {
-        private SerializedFile assetsFile;
         private Dictionary<uint, string> bonePathHash = new Dictionary<uint, string>();
         public List<ImportedKeyframedAnimation> AnimationList { get; protected set; } = new List<ImportedKeyframedAnimation>();
 
@@ -30,7 +29,6 @@ namespace CubismLive2DExtractor
             foreach (var animationClip in animationClips)
             {
                 var iAnim = new ImportedKeyframedAnimation();
-                assetsFile = animationClip.assetsFile;
                 AnimationList.Add(iAnim);
                 iAnim.Name = animationClip.m_Name;
                 iAnim.SampleRate = animationClip.m_SampleRate;
@@ -136,7 +134,7 @@ namespace CubismLive2DExtractor
                     target = "PartOpacity";
                 }
             }
-            else if (binding.script.TryGet(out MonoScript script, assetsFile))
+            else if (binding.script.TryGet(out MonoScript script))
             {
                 switch (script.m_ClassName)
                 {

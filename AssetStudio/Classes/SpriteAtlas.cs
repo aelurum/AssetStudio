@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace AssetStudio
 {
@@ -45,6 +46,7 @@ namespace AssetStudio
     public sealed class SpriteAtlas : NamedObject
     {
         public PPtr<Sprite>[] m_PackedSprites;
+        [JsonConverter(typeof(JsonConverterHelper.RenderDataMapConverter))]
         public Dictionary<KeyValuePair<Guid, long>, SpriteAtlasData> m_RenderDataMap;
         public bool m_IsVariant;
 

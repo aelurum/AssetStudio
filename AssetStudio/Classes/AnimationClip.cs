@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -1031,9 +1030,9 @@ namespace AssetStudio
 
         public AnimationClip() { }
 
-        public AnimationClip(ObjectReader reader, IDictionary typeDict, JsonSerializerOptions jsonOptions) : base(reader)
+        public AnimationClip(ObjectReader reader, byte[] type, JsonSerializerOptions jsonOptions) : base(reader)
         {
-            var parsedAnimClip = JsonSerializer.Deserialize<AnimationClip>(JsonSerializer.SerializeToUtf8Bytes(typeDict, jsonOptions), jsonOptions);
+            var parsedAnimClip = JsonSerializer.Deserialize<AnimationClip>(type, jsonOptions);
             m_AnimationType = parsedAnimClip.m_AnimationType;
             m_Legacy = parsedAnimClip.m_Legacy;
             m_Compressed = parsedAnimClip.m_Compressed;
@@ -1052,8 +1051,6 @@ namespace AssetStudio
             m_MuscleClip = parsedAnimClip.m_MuscleClip;
             m_ClipBindingConstant = parsedAnimClip.m_ClipBindingConstant;
             m_Events = parsedAnimClip.m_Events;
-
-            typeDict.Clear();
         }
 
         public AnimationClip(ObjectReader reader) : base(reader)

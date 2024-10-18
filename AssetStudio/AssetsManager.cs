@@ -515,16 +515,17 @@ namespace AssetStudio
 
             var jsonOptions = new JsonSerializerOptions
             {
-                Converters = { new JsonConverterHelper.ByteArrayConverter() },
+                Converters = { new JsonConverterHelper.ByteArrayConverter(), new JsonConverterHelper.PPtrConverter() },
                 NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
                 IncludeFields = true,
             };
 
             var progressCount = assetsFileList.Sum(x => x.m_Objects.Count);
-            int i = 0;
+            var i = 0;
             Progress.Reset();
             foreach (var assetsFile in assetsFileList)
             {
+                JsonConverterHelper.PPtrConverter.AssetsFile = assetsFile;
                 foreach (var objectInfo in assetsFile.m_Objects)
                 {
                     var objectReader = new ObjectReader(assetsFile.reader, assetsFile, objectInfo);
@@ -542,7 +543,7 @@ namespace AssetStudio
                                 break;
                             case ClassIDType.AnimationClip:
                                 obj = objectReader.serializedType?.m_Type != null && LoadingViaTypeTreeEnabled
-                                    ? new AnimationClip(objectReader, TypeTreeHelper.ReadType(objectReader.serializedType.m_Type, objectReader), jsonOptions)
+                                    ? new AnimationClip(objectReader, TypeTreeHelper.ReadTypeByteArray(objectReader.serializedType.m_Type, objectReader), jsonOptions)
                                     : new AnimationClip(objectReader);
                                 break;
                             case ClassIDType.Animator:
@@ -620,12 +621,12 @@ namespace AssetStudio
                                 break;
                             case ClassIDType.Texture2D:
                                 obj = objectReader.serializedType?.m_Type != null && LoadingViaTypeTreeEnabled
-                                    ? new Texture2D(objectReader, TypeTreeHelper.ReadType(objectReader.serializedType.m_Type, objectReader), jsonOptions)
+                                    ? new Texture2D(objectReader, TypeTreeHelper.ReadTypeByteArray(objectReader.serializedType.m_Type, objectReader), jsonOptions)
                                     : new Texture2D(objectReader);
                                 break;
                             case ClassIDType.Texture2DArray:
                                 obj = objectReader.serializedType?.m_Type != null && LoadingViaTypeTreeEnabled
-                                    ? new Texture2DArray(objectReader, TypeTreeHelper.ReadType(objectReader.serializedType.m_Type, objectReader), jsonOptions)
+                                    ? new Texture2DArray(objectReader, TypeTreeHelper.ReadTypeByteArray(objectReader.serializedType.m_Type, objectReader), jsonOptions)
                                     : new Texture2DArray(objectReader);
                                 break;
                             case ClassIDType.Transform:

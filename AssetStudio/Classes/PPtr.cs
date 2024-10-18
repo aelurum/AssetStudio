@@ -19,6 +19,11 @@ namespace AssetStudio
 
         public PPtr() { }
 
+        public void SetAssetsFile(SerializedFile assetsFile)
+        {
+            _assetsFile = assetsFile;
+        }
+
         private bool TryGetAssetsFile(out SerializedFile result)
         {
             result = null;
