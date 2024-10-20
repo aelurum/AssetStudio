@@ -574,7 +574,9 @@ namespace AssetStudio
                                 obj = new GameObject(objectReader);
                                 break;
                             case ClassIDType.Material:
-                                obj = new Material(objectReader);
+                                obj = objectReader.serializedType?.m_Type != null && LoadingViaTypeTreeEnabled
+                                    ? new Material(objectReader, TypeTreeHelper.ReadTypeByteArray(objectReader.serializedType.m_Type, objectReader), jsonOptions)
+                                    : new Material(objectReader);
                                 break;
                             case ClassIDType.Mesh:
                                 obj = new Mesh(objectReader);

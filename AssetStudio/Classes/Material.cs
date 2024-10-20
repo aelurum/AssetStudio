@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 
 namespace AssetStudio
 {
@@ -7,6 +8,8 @@ namespace AssetStudio
         public PPtr<Texture> m_Texture;
         public Vector2 m_Scale;
         public Vector2 m_Offset;
+
+        public UnityTexEnv() { }
 
         public UnityTexEnv(ObjectReader reader)
         {
@@ -22,6 +25,8 @@ namespace AssetStudio
         public KeyValuePair<string, int>[] m_Ints;
         public KeyValuePair<string, float>[] m_Floats;
         public KeyValuePair<string, Color>[] m_Colors;
+
+        public UnityPropertySheet() { }
 
         public UnityPropertySheet(ObjectReader reader)
         {
@@ -64,6 +69,15 @@ namespace AssetStudio
     {
         public PPtr<Shader> m_Shader;
         public UnityPropertySheet m_SavedProperties;
+
+        public Material() { }
+
+        public Material(ObjectReader reader, byte[] type, JsonSerializerOptions jsonOptions) : base(reader)
+        {
+            var parsedMaterial = JsonSerializer.Deserialize<Material>(type, jsonOptions);
+            m_Shader = parsedMaterial.m_Shader;
+            m_SavedProperties = parsedMaterial.m_SavedProperties;
+        }
 
         public Material(ObjectReader reader) : base(reader)
         {
