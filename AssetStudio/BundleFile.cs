@@ -35,7 +35,7 @@ namespace AssetStudio
         Lzma,
         Lz4,
         Lz4HC,
-        Lzham
+        Lz4Inv,
     }
 
     public class BundleFile
@@ -378,20 +378,31 @@ namespace AssetStudio
                         }
                     case CompressionType.Lz4:
                     case CompressionType.Lz4HC:
+                    case CompressionType.Lz4Inv:
                         {
                             var compressedSize = (int)blockInfo.compressedSize;
                             var compressedBytes = BigArrayPool<byte>.Shared.Rent(compressedSize);
-                            reader.Read(compressedBytes, 0, compressedSize);
+                            _ = reader.Read(compressedBytes, 0, compressedSize);
                             var uncompressedSize = (int)blockInfo.uncompressedSize;
                             var uncompressedBytes = BigArrayPool<byte>.Shared.Rent(uncompressedSize);
-                            var numWrite = LZ4Codec.Decode(compressedBytes, 0, compressedSize, uncompressedBytes, 0, uncompressedSize);
-                            if (numWrite != uncompressedSize)
+                            try
                             {
-                                throw new IOException($"Lz4 decompression error, write {numWrite} bytes but expected {uncompressedSize} bytes");
+                                var compressedSpan = compressedBytes.AsSpan(0, compressedSize);
+                                var uncompressedSpan = uncompressedBytes.AsSpan(0, uncompressedSize);
+                                var numWrite = compressionType == CompressionType.Lz4Inv
+                                    ? LZ4Inv.Instance.Decompress(compressedSpan, uncompressedSpan)
+                                    : LZ4Codec.Decode(compressedSpan, uncompressedSpan);
+                                if (numWrite != uncompressedSize)
+                                {
+                                    throw new IOException($"Lz4 decompression error, write {numWrite} bytes but expected {uncompressedSize} bytes");
+                                }
+                                blocksStream.Write(uncompressedBytes, 0, uncompressedSize);
                             }
-                            blocksStream.Write(uncompressedBytes, 0, uncompressedSize);
-                            BigArrayPool<byte>.Shared.Return(compressedBytes);
-                            BigArrayPool<byte>.Shared.Return(uncompressedBytes);
+                            finally
+                            {
+                                BigArrayPool<byte>.Shared.Return(compressedBytes);
+                                BigArrayPool<byte>.Shared.Return(uncompressedBytes);
+                            }
                             break;
                         }
                     default:
