@@ -1,8 +1,9 @@
 # ArknightsStudio
 
-![Latest release](https://img.shields.io/github/v/release/aelurum/AssetStudio?filter=ak*&label=Latest%20release) [![Download latest release](https://img.shields.io/github/v/release/aelurum/AssetStudio?filter=ak*&label=Download&labelColor=blue)](https://github.com/aelurum/AssetStudio/tags)
+[![Latest release](https://img.shields.io/github/v/release/aelurum/AssetStudio?filter=ak*&label=Latest%20release)](https://github.com/aelurum/AssetStudio/tags) [![Download latest release](https://img.shields.io/github/v/release/aelurum/AssetStudio?filter=ak*&label=Download&labelColor=blue)](https://github.com/aelurum/AssetStudio/tags)
 
-![Build status](https://ci.appveyor.com/api/projects/status/857ucvvp0cykv1ni?svg=true) [![Download latest build](https://img.shields.io/badge/Download_latest_build-brightgreen)](https://ci.appveyor.com/project/aelurum/arknightsstudio/build/artifacts)
+[![Build status](https://ci.appveyor.com/api/projects/status/857ucvvp0cykv1ni?svg=true)](https://ci.appveyor.com/project/aelurum/arknightsstudio) [![Download latest build](https://img.shields.io/badge/Download_latest_build-brightgreen)](https://ci.appveyor.com/project/aelurum/arknightsstudio/build/artifacts)
+
 
 **ArknightsStudio** is a modified version of AssetStudio designed for Arknights. Based on [AssetStudioMod](https://github.com/aelurum/AssetStudio).
 

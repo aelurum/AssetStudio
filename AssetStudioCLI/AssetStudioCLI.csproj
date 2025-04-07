@@ -5,8 +5,8 @@
         <TargetFrameworks>net472;net6.0;net7.0;net8.0</TargetFrameworks>
         <AssemblyTitle>ArknightsStudio by aelurum</AssemblyTitle>
         <AssemblyName>ArknightsStudioCLI</AssemblyName>
-        <Version>1.1.0</Version>
-        <Copyright>Copyright © Perfare; Copyright © aelurum 2023</Copyright>
+        <Version>1.2.0</Version>
+        <Copyright>Copyright © Perfare; Copyright © aelurum 2025</Copyright>
         <PlatformTarget>AnyCPU</PlatformTarget>
         <DebugType>embedded</DebugType>
     </PropertyGroup>

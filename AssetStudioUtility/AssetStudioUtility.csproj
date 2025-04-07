@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFrameworks>net472;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows</TargetFrameworks>
-        <Version>1.1.0</Version>
-        <Copyright>Copyright © Perfare 2018-2022; Copyright © aelurum 2023</Copyright>
+        <Version>1.2.0</Version>
+        <Copyright>Copyright © Perfare 2018-2022; Copyright © aelurum 2025</Copyright>
         <DebugType>embedded</DebugType>
     </PropertyGroup>
 
