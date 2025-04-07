@@ -4,6 +4,7 @@ using AssetStudioGUI;
 using SixLabors.ImageSharp;
 using System.Linq;
 using System;
+using System.Collections.Specialized;
 using Newtonsoft.Json;
 
 namespace Arknights
@@ -43,17 +44,39 @@ namespace Arknights
         private bool TryGetSpriteHub(AssetItem assetItem, out AvgSpriteConfig spriteHubData)
         {
             spriteHubData = null;
-            var avgSpriteHubItem = Studio.exportableAssets.Find(x =>
+            var scriptAssets = Studio.exportableAssets.FindAll(x =>
                 x.Type == ClassIDType.MonoBehaviour
-                && x.Container == assetItem.Container
-                && x.Text.IndexOf("AVGCharacterSpriteHub", StringComparison.OrdinalIgnoreCase) >= 0
-            );
-            if (avgSpriteHubItem == null)
+                && x.Container == assetItem.Container);
+            if (scriptAssets.Count == 0)
             {
-                Logger.Warning("AVGCharacterSpriteHub was not found.");
+                Logger.Warning("No MonoBehaviours were found.");
                 return false;
             }
-            var spriteHubDict = ((MonoBehaviour)avgSpriteHubItem.Asset).ToType();
+
+            OrderedDictionary spriteHubDict = null;
+            var isGrouped = false;
+            foreach (var scriptAsset in scriptAssets)
+            {
+                var scriptAssetDict = ((MonoBehaviour)scriptAsset.Asset).ToType();
+                if (scriptAssetDict == null)
+                {
+                    Logger.Warning("MonoBehaviour is not readable.");
+                    return false;
+                }
+
+                if (scriptAssetDict.Contains("spriteGroups"))
+                {
+                    spriteHubDict = scriptAssetDict;
+                    isGrouped = true;
+                    break;
+                }
+                if (scriptAssetDict.Contains("sprites"))
+                {
+                    spriteHubDict = scriptAssetDict;
+                    break;
+                }
+            }
+
             if (spriteHubDict == null)
             {
                 Logger.Warning("AVGCharacterSpriteHub is not readable.");
@@ -61,7 +84,7 @@ namespace Arknights
             }
 
             var spriteHubJson = JsonConvert.SerializeObject(spriteHubDict);
-            if (avgSpriteHubItem.Text.ToLower().Contains("hubgroup"))
+            if (isGrouped)
             {
                 var groupedSpriteHub = JsonConvert.DeserializeObject<AvgSpriteConfigGroup>(spriteHubJson);
                 spriteHubData = GetCurSpriteGroup(groupedSpriteHub, assetItem.m_PathID, assetItem.Text);
