@@ -137,6 +137,9 @@ namespace Arknights
             var portraitsJson = JsonConvert.SerializeObject(portraitsDict);
             var portraitsData = JsonConvert.DeserializeObject<PortraitSpriteConfig>(portraitsJson);
 
+            if (portraitsData._sprites.Length == 0)
+                return portraits;
+
             var atlasTex = (Texture2D)Studio.loadedAssetsList.Find(x => x.m_PathID == portraitsData._atlas.Texture.m_PathID).Asset;
             var atlasAlpha = (Texture2D)Studio.loadedAssetsList.Find(x => x.m_PathID == portraitsData._atlas.Alpha.m_PathID).Asset;
 
