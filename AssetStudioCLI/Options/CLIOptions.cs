@@ -125,6 +125,7 @@ namespace AssetStudioCLI.Options
         public static Option<int> o_maxParallelExportTasks;
         public static Option<ExportListType> o_exportAssetList;
         public static Option<string> o_assemblyPath;
+        public static Option<string> o_stripPathPrefix;
         public static Option<UnityVersion> o_unityVersion;
         public static Option<bool> f_decompressToDisk;
         public static Option<bool> f_notRestoreExtensionName;
@@ -532,6 +533,14 @@ namespace AssetStudioCLI.Options
                 optionName: "--assembly-folder <path>",
                 optionDescription: "Specify the path to the assembly folder\n",
                 optionExample: "",
+                optionHelpGroup: HelpGroups.Advanced
+            );
+            o_stripPathPrefix = new GroupedOption<string>
+            (
+                optionDefaultValue: "",
+                optionName: "--strip-path-prefix <path>",
+                optionDescription: "Specify a path prefix to be stripped from exported asset paths\n",
+                optionExample: "Example: \"--strip-path-prefix assets/models/char/\"\n",
                 optionHelpGroup: HelpGroups.Advanced
             );
             o_unityVersion = new GroupedOption<UnityVersion>
@@ -1243,6 +1252,13 @@ namespace AssetStudioCLI.Options
                             {
                                 Console.WriteLine($"{"Error".Color(brightRed)} during parsing [{option.Color(brightYellow)}] option. Assembly folder [{value.Color(brightRed)}] was not found.");
                                 return;
+                            }
+                            break;
+                        case "--strip-path-prefix":
+                            o_stripPathPrefix.Value = Path.Combine(Path.GetDirectoryName(value), Path.GetFileName(value));
+                            if (!o_stripPathPrefix.Value.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                            {
+                                o_stripPathPrefix.Value += Path.DirectorySeparatorChar;
                             }
                             break;
                         case "--unity-version":

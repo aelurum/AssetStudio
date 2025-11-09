@@ -186,6 +186,9 @@ Advanced Options:
 
   --assembly-folder <path>      Specify the path to the assembly folder
 
+  --strip-path-prefix <path>    Specify a path prefix to be stripped from exported asset paths
+                                Example: "--strip-path-prefix assets/models/char/"
+
   --unity-version <text>        Specify Unity version
                                 Example: "--unity-version 2017.4.39f1"
 
