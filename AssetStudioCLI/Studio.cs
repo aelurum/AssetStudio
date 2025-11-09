@@ -637,6 +637,14 @@ namespace AssetStudioCLI
                     );
                     break;
             }
+        
+            if (CLIOptions.f_filterBlackListMode.Value)
+            {
+                var blackListedCount = assetsCount - filteredAssets.Count;
+                Logger.Info($"Black list mode enabled: Excluding {blackListedCount} asset(s) from export.");
+                filteredAssets = parsedAssetsList.Except(filteredAssets).ToList();
+            }
+
             parsedAssetsList.Clear();
             parsedAssetsList = filteredAssets;
         }

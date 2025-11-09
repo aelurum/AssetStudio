@@ -152,6 +152,9 @@ Filter Options:
   --filter-with-regex           (Flag) If specified, the filter options will handle the specified text
                                 as a regular expression (doesn't apply to --filter-by-pathid)
 
+  --filter-blacklist-mode       (Flag) If specified, the filter options will work as a blacklist
+                                (i.e. assets that match the filter conditions will be excluded)
+
 Advanced Options:
   --blockinfo-comp <value>      Specify the compression type of bundle's blockInfo data
                                 <Value: auto(default) | zstd | oodle | lz4 | lzma>
