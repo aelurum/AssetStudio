@@ -679,6 +679,11 @@ namespace AssetStudioCLI
                 }
             }
 
+            if (CLIOptions.o_stripPathPrefix.Value != null)
+            {
+                Logger.Info($"Asset container path prefix \"{CLIOptions.o_stripPathPrefix.Value}\" will be stripped off.")
+            }
+
             Parallel.ForEach(parsedAssetsList, asset =>
             {
                 string exportPath;
