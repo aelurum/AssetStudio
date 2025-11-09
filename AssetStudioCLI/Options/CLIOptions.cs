@@ -118,7 +118,7 @@ namespace AssetStudioCLI.Options
         public static Option<List<string>> o_filterByPathID;
         public static Option<List<string>> o_filterByText;
         public static Option<bool> f_filterWithRegex;
-        public static Option<bool> f_filterBlackListMode;
+        public static Option<bool> f_filterExcludeMode;
         //advanced
         public static Option<CompressionType> o_bundleBlockInfoCompression;
         public static Option<CompressionType> o_bundleBlockCompression;
@@ -463,11 +463,11 @@ namespace AssetStudioCLI.Options
                 optionHelpGroup: HelpGroups.Filter,
                 isFlag: true
             );
-            f_filterBlackListMode = new GroupedOption<bool>
+            f_filterExcludeMode = new GroupedOption<bool>
             (
                 optionDefaultValue: false,
-                optionName: "--filter-blacklist-mode",
-                optionDescription: "(Flag) If specified, the filter options will work as a blacklist\n" +
+                optionName: "--filter-exclude-mode",
+                optionDescription: "(Flag) If specified, the filter options will work as a exclude\n" +
                     "(i.e. assets that match the filter conditions will be excluded)",
                 optionExample: "",
                 optionHelpGroup: HelpGroups.Filter,
@@ -759,8 +759,8 @@ namespace AssetStudioCLI.Options
                         f_filterWithRegex.Value = true;
                         flagIndexes.Add(i);
                         break;
-                    case "--filter-blacklist-mode":
-                        f_filterBlackListMode.Value = true;
+                    case "--filter-exclude-mode":
+                        f_filterExcludeMode.Value = true;
                         flagIndexes.Add(i);
                         break;
                     case "--decompress-to-disk":
@@ -1488,14 +1488,14 @@ namespace AssetStudioCLI.Options
                     }
                     sb.AppendLine(ShowCurrentFilter());
                     sb.AppendLine($"# Filter With Regex: {f_filterWithRegex}");
-                    sb.AppendLine($"# Filter Blacklist mode: {f_filterBlackListMode}");
+                    sb.AppendLine($"# Filter Exclusion Mode: {f_filterExcludeMode}");
                     sb.AppendLine($"# Assembly Path: \"{o_assemblyPath}\"");
                     break;
                 case WorkMode.Live2D:
                     sb.AppendLine($"# [{o_workMode} Options]");
                     sb.AppendLine($"# Filter by Text: \"{string.Join("\", \"", o_filterByText.Value)}\"");
                     sb.AppendLine($"# Filter With Regex: {f_filterWithRegex}");
-                    sb.AppendLine($"# Filter Blacklist mode: {f_filterBlackListMode}");
+                    sb.AppendLine($"# Filter Exclusion Mode: {f_filterExcludeMode}");
                     sb.AppendLine($"# Model Group Option: {o_l2dGroupOption}");
                     sb.AppendFormat("# Search Model-related Assets by: {0}\n", f_l2dAssetSearchByFilename.Value ? "FileName" : "Container");
                     sb.AppendLine($"# Motion Export Method: {o_l2dMotionMode}");
@@ -1509,7 +1509,7 @@ namespace AssetStudioCLI.Options
                         ? ShowCurrentFilter()
                         : $"# Filter by Name(s): \"{string.Join("\", \"", o_filterByName.Value)}\"");
                     sb.AppendLine($"# Filter With Regex: {f_filterWithRegex}");
-                    sb.AppendLine($"# Filter Blacklist mode: {f_filterBlackListMode}");
+                    sb.AppendLine($"# Filter Exclusion Mode: {f_filterExcludeMode}");
                     sb.AppendLine($"# Export Image Format: {o_imageFormat}");
                     sb.AppendLine($"# FBX Scale Factor: {o_fbxScaleFactor}");
                     sb.AppendLine($"# FBX Bone Size: {o_fbxBoneSize}");
