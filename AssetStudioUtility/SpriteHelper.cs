@@ -194,8 +194,8 @@ namespace AssetStudio
             if (cropped == null)
                 return null;
             
-            var canvas = new Image<Bgra32>(m_Sprite.m_Rect.width, m_Sprite.m_Rect.height, SixLabors.ImageSharp.Color.Transparent);
-            canvas.Mutate(ctx => ctx.DrawImage(cropped, new Point(textureRectOffset.X, m_Sprite.m_Rect.height - textureRectOffset.Y - cropped.Height), 1f));
+            var canvas = new Image<Bgra32>((int)MathF.Floor(m_Sprite.m_Rect.width), (int)MathF.Floor(m_Sprite.m_Rect.height));
+            canvas.Mutate(ctx => ctx.DrawImage(cropped, new Point((int)MathF.Floor(textureRectOffset.X), (int)MathF.Floor(m_Sprite.m_Rect.height - textureRectOffset.Y - cropped.Height)), 1f));
 
             cropped.Dispose();
             return canvas;
