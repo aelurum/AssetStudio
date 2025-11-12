@@ -37,9 +37,9 @@ namespace AssetStudio
                     Image<Bgra32> tex = null;
                     if (spriteMaskMode != SpriteMaskMode.MaskOnly)
                     {
-                        tex = CutImage(m_Sprite, m_Texture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw);
+                        tex = CutImageWithCanvas(m_Sprite, m_Texture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw);
                     }
-                    var alphaTex = CutImage(m_Sprite, m_AlphaTexture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw);
+                    var alphaTex = CutImageWithCanvas(m_Sprite, m_AlphaTexture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw);
 
                     switch (spriteMaskMode)
                     {
@@ -55,7 +55,7 @@ namespace AssetStudio
                 }
                 else if (m_Sprite.m_RD.texture.TryGet(out m_Texture2D))
                 {
-                    return CutImage(m_Sprite, m_Texture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw);
+                    return CutImageWithCanvas(m_Sprite, m_Texture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw);
                 }
             }
             return null;
@@ -186,6 +186,19 @@ namespace AssetStudio
             }
 
             return null;
+        }
+
+        private static Image<Bgra32> CutImageWithCanvas(Sprite m_Sprite, Texture2D m_Texture2D, Rectf textureRect, Vector2 textureRectOffset, float downscaleMultiplier, SpriteSettings settingsRaw)
+        {
+            var cropped = CutImage(m_Sprite, m_Texture2D, textureRect, textureRectOffset, downscaleMultiplier, settingsRaw);
+            if (cropped == null)
+                return null;
+            
+            var canvas = new Image<Bgra32>(m_Sprite.m_Rect.width, m_Sprite.m_Rect.height, SixLabors.ImageSharp.Color.Transparent);
+            canvas.Mutate(ctx => ctx.DrawImage(cropped, new Point(textureRectOffset.X, m_Sprite.m_Rect.height - textureRectOffset.Y - cropped.Height), 1f));
+
+            cropped.Dispose();
+            return canvas;
         }
 
         private static Vector2[][] GetTriangles(SpriteRenderData m_RD)
