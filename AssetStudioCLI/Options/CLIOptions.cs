@@ -679,6 +679,7 @@ namespace AssetStudioCLI.Options
                         o_exportAssetTypes.Value = new List<ClassIDType>
                         {
                             ClassIDType.Animator,
+                            ClassIDType.AnimationClip,
                             ClassIDType.Mesh,
                             ClassIDType.Texture2D,
                         };
