@@ -727,7 +727,7 @@ namespace AssetStudioCLI.Options
                         flagIndexes.Add(i);
                         break;
                     case "--fbx-uvs-as-diffuse":
-                        if (o_workMode.Value != WorkMode.SplitObjects)
+                        if (o_workMode.Value != WorkMode.SplitObjects && o_workMode.Value != WorkMode.Animator)
                         {
                             Console.WriteLine($"{"Error".Color(brightRed)} during parsing [{flag.Color(brightYellow)}] flag. This flag is not suitable for the current working mode [{o_workMode.Value}].\n");
                             ShowOptionDescription(o_workMode);
