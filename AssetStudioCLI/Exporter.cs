@@ -287,6 +287,7 @@ namespace AssetStudioCLI
                 ScaleFactor = CLIOptions.o_fbxScaleFactor.Value,
                 ExportAllUvsAsDiffuseMaps = CLIOptions.f_fbxUvsAsDiffuseMaps.Value,
                 ExportAnimations = CLIOptions.o_fbxAnimMode.Value != AnimationExportMode.Skip,
+                FbxFormat = CLIOptions.f_fbxAsciiFormat.Value == true ? 1 : 0,
             };
             ModelExporter.ExportFbx(exportPath, convert, fbxSettings);
         }
