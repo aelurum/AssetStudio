@@ -112,6 +112,7 @@ namespace AssetStudioCLI.Options
         public static Option<int> o_fbxBoneSize;
         public static Option<AnimationExportMode> o_fbxAnimMode;
         public static Option<bool> f_fbxUvsAsDiffuseMaps;
+        public static Option<bool> f_fbxAsciiFormat;
         //filter
         public static Option<List<string>> o_filterByName;
         public static Option<List<string>> o_filterByContainer;
@@ -407,7 +408,16 @@ namespace AssetStudioCLI.Options
                 optionName: "--fbx-uvs-as-diffuse",
                 optionDescription: "(Flag) If specified, Studio will export all UVs as Diffuse maps.\n" +
                     "Сan be useful if you cannot find some UVs after exporting (e.g. in Blender)\n" +
-                    "(But can also cause some bugs with UVs)",
+                    "(But can also cause some bugs with UVs)\n",
+                optionExample: "",
+                optionHelpGroup: HelpGroups.FBX
+            );
+            f_fbxAsciiFormat = new GroupedOption<bool>
+            (
+                optionDefaultValue: false,
+                optionName: "--fbx-ascii-format",
+                optionDescription: "(Flag) If specified, Studio will export FBX in ASCII format.\n" +
+                    "If not specified, Binary format will be used",
                 optionExample: "",
                 optionHelpGroup: HelpGroups.FBX
             );
@@ -734,6 +744,10 @@ namespace AssetStudioCLI.Options
                             return;
                         }
                         f_fbxUvsAsDiffuseMaps.Value = true;
+                        flagIndexes.Add(i);
+                        break;
+                    case "--fbx-ascii-format":
+                        f_fbxAsciiFormat.Value = true;
                         flagIndexes.Add(i);
                         break;
                     case "--filter-with-regex":
@@ -1482,6 +1496,7 @@ namespace AssetStudioCLI.Options
                     sb.AppendLine($"# FBX Bone Size: {o_fbxBoneSize}");
                     sb.AppendLine($"# FBX Animation Mode: {o_fbxAnimMode}");
                     sb.AppendLine($"# FBX UVs as Diffuse Maps: {f_fbxUvsAsDiffuseMaps}");
+                    sb.AppendLine($"# FBX Export in ASCII Format: {f_fbxAsciiFormat}");
                     break;
             }
             sb.AppendLine("======");
