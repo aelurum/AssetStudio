@@ -770,7 +770,6 @@ namespace AssetStudioCLI
                     toExportAssetDict.TryAdd(asset, exportPath);
                 }
             });
-     
             foreach (var toExportAsset in toExportAssetDict)
             {
                 var asset = toExportAsset.Key;
