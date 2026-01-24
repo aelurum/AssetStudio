@@ -467,7 +467,7 @@ namespace AssetStudioCLI.Options
             (
                 optionDefaultValue: false,
                 optionName: "--filter-exclude-mode",
-                optionDescription: "(Flag) If specified, the filter options will work as a exclude\n" +
+                optionDescription: "(Flag) If specified, the filter options will work as an exclusion\n" +
                     "(i.e. assets that match the filter conditions will be excluded)",
                 optionExample: "",
                 optionHelpGroup: HelpGroups.Filter,

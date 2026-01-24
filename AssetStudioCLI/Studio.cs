@@ -641,7 +641,7 @@ namespace AssetStudioCLI
             if (CLIOptions.f_filterExcludeMode.Value)
             {
                 var excludeCount = assetsCount - filteredAssets.Count;
-                Logger.Info($"Excluding {excludeCount} asset(s) from export.");
+                Logger.Info($"Excluding {excludeCount} asset(s) that match the filter.");
                 filteredAssets = parsedAssetsList.Except(filteredAssets).ToList();
             }
 
