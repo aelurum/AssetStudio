@@ -152,6 +152,9 @@ Filter Options:
   --filter-with-regex           (Flag) If specified, the filter options will handle the specified text
                                 as a regular expression (doesn't apply to --filter-by-pathid)
 
+  --filter-exclude-mode       (Flag) If specified, the filter options will work as an exclusion
+                                (i.e. assets that match the filter conditions will be excluded)
+
 Advanced Options:
   --blockinfo-comp <value>      Specify the compression type of bundle's blockInfo data
                                 <Value: auto(default) | zstd | oodle | lz4 | lzma>
@@ -182,6 +185,9 @@ Advanced Options:
                                 Example: "--export-asset-list xml"
 
   --assembly-folder <path>      Specify the path to the assembly folder
+
+  --strip-path-prefix <path>    Specify a path prefix to be stripped from exported asset paths
+                                Example: "--strip-path-prefix assets/models/char/"
 
   --unity-version <text>        Specify Unity version
                                 Example: "--unity-version 2017.4.39f1"

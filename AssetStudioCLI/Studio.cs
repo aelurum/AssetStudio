@@ -637,6 +637,14 @@ namespace AssetStudioCLI
                     );
                     break;
             }
+        
+            if (CLIOptions.f_filterExcludeMode.Value)
+            {
+                var excludeCount = assetsCount - filteredAssets.Count;
+                Logger.Info($"Excluding {excludeCount} asset(s) that match the filter.");
+                filteredAssets = parsedAssetsList.Except(filteredAssets).ToList();
+            }
+
             parsedAssetsList.Clear();
             parsedAssetsList = filteredAssets;
         }
@@ -651,6 +659,31 @@ namespace AssetStudioCLI
             var parallelExportCount = CLIOptions.o_maxParallelExportTasks.Value;
             var toExportAssetDict = new ConcurrentDictionary<AssetItem, string>();
             var toParallelExportAssetDict = new ConcurrentDictionary<AssetItem, string>();
+
+            if (CLIOptions.o_stripPathPrefix.Value != null)
+            {
+                foreach (var asset in parsedAssetsList)
+                {
+                    var containerPath = asset.Container;
+                    if (string.IsNullOrEmpty(containerPath))
+                    {
+                        continue;
+                    }
+                    if (!Path.Combine(Path.GetDirectoryName(containerPath), Path.GetFileName(containerPath)).StartsWith(CLIOptions.o_stripPathPrefix.Value))
+                    {
+                        Logger.Warning($"Asset container path \"{asset.Container}\" does not start with the specified path prefix \"{CLIOptions.o_stripPathPrefix.Value}\"");
+                        Logger.Warning("strip path prefix option will be ignored.");
+                        CLIOptions.o_stripPathPrefix.Value = null;
+                        break;
+                    }
+                }
+            }
+
+            if (CLIOptions.o_stripPathPrefix.Value != null)
+            {
+                Logger.Info($"Asset container path prefix \"{CLIOptions.o_stripPathPrefix.Value}\" will be stripped off.");
+            }
+
             Parallel.ForEach(parsedAssetsList, asset =>
             {
                 string exportPath;
@@ -663,7 +696,12 @@ namespace AssetStudioCLI
                     case AssetGroupOption.ContainerPathFull:
                         if (!string.IsNullOrEmpty(asset.Container))
                         {
-                            exportPath = Path.Combine(savePath, Path.GetDirectoryName(asset.Container));
+                            var containerPath = Path.GetDirectoryName(asset.Container);
+                            if (CLIOptions.o_stripPathPrefix.Value != null)
+                            {
+                                containerPath = containerPath.Substring(CLIOptions.o_stripPathPrefix.Value.Length);
+                            }
+                            exportPath = Path.Combine(savePath, containerPath);
                             if (groupOption == AssetGroupOption.ContainerPathFull)
                             {
                                 exportPath = Path.Combine(exportPath, Path.GetFileNameWithoutExtension(asset.Container));
@@ -732,7 +770,6 @@ namespace AssetStudioCLI
                     toExportAssetDict.TryAdd(asset, exportPath);
                 }
             });
-            
             foreach (var toExportAsset in toExportAssetDict)
             {
                 var asset = toExportAsset.Key;
