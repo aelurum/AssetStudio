@@ -13,12 +13,12 @@
     </ItemGroup>
 
     <ItemGroup Condition=" !$(TargetFramework.Contains('windows')) ">
-        <PackageReference Include="Kyaru.Texture2DDecoder.Linux" Version="0.1.0" />
-        <PackageReference Include="Kyaru.Texture2DDecoder.macOS" Version="0.1.0" />
+        <PackageReference Include="Kyaru.Texture2DDecoder.Linux" Version="0.2.0" />
+        <PackageReference Include="Kyaru.Texture2DDecoder.macOS" Version="0.2.0" />
     </ItemGroup>
     
     <ItemGroup Condition=" '$(TargetFramework)' != 'net472' ">
-        <PackageReference Include="Kyaru.Texture2DDecoder.Windows" Version="0.1.0" />
+        <PackageReference Include="Kyaru.Texture2DDecoder.Windows" Version="0.2.0" />
         <PackageReference Include="Kyaru.Texture2DDecoder">
             <Version>0.17.0</Version>
         </PackageReference>
