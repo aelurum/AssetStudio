@@ -75,9 +75,10 @@ namespace AssetStudioGUI
             debugLog = "";
             var type = Properties.Settings.Default.convertType;
             var spriteMaskMode = Properties.Settings.Default.exportSpriteWithMask ? SpriteMaskMode.Export : SpriteMaskMode.Off;
+            var spriteWithCanvas = Properties.Settings.Default.spriteWithCanvas;
             if (!TryExportFile(exportPath, item, "." + type.ToString().ToLower(), out var exportFullPath))
                 return false;
-            var image = ((Sprite)item.Asset).GetImage(spriteMaskMode: spriteMaskMode);
+            var image = ((Sprite)item.Asset).GetImage(spriteMaskMode: spriteMaskMode, spriteWithCanvas: spriteWithCanvas);
             if (image != null)
             {
                 using (image)

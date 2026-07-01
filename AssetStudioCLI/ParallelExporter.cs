@@ -76,9 +76,10 @@ namespace AssetStudioCLI
             debugLog = "";
             var type = CLIOptions.o_imageFormat.Value;
             var alphaMask = SpriteMaskMode.On;
+            var spriteWithCanvas = CLIOptions.f_spriteWithCanvas.Value;
             if (!TryExportFile(exportPath, item, "." + type.ToString().ToLower(), out var exportFullPath))
                 return false;
-            var image = ((Sprite)item.Asset).GetImage(alphaMask);
+            var image = ((Sprite)item.Asset).GetImage(alphaMask, spriteWithCanvas: spriteWithCanvas);
             if (image != null)
             {
                 using (image)
