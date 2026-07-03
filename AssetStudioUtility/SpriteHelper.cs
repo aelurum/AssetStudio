@@ -27,9 +27,7 @@ namespace AssetStudio
             {
                 if (m_SpriteAtlas.m_RenderDataMap.TryGetValue(m_Sprite.m_RenderDataKey, out var spriteAtlasData) && spriteAtlasData.texture.TryGet(out var m_Texture2D))
                 {
-                    return spriteWithCanvas ?
-                        CutImageWithCanvas(m_Sprite, m_Texture2D, spriteAtlasData.textureRect, spriteAtlasData.textureRectOffset, spriteAtlasData.downscaleMultiplier, spriteAtlasData.settingsRaw) :
-                        CutImage(m_Sprite, m_Texture2D, spriteAtlasData.textureRect, spriteAtlasData.textureRectOffset, spriteAtlasData.downscaleMultiplier, spriteAtlasData.settingsRaw);
+                    return CutImageWithCanvas(m_Sprite, m_Texture2D, spriteAtlasData.textureRect, spriteAtlasData.textureRectOffset, spriteAtlasData.downscaleMultiplier, spriteAtlasData.settingsRaw, spriteWithCanvas);
                 }
             }
             else
@@ -39,9 +37,9 @@ namespace AssetStudio
                     Image<Bgra32> tex = null;
                     if (spriteMaskMode != SpriteMaskMode.MaskOnly)
                     {
-                        tex = spriteWithCanvas ? CutImageWithCanvas(m_Sprite, m_Texture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw) : CutImage(m_Sprite, m_Texture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw);
+                        tex = CutImageWithCanvas(m_Sprite, m_Texture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw, spriteWithCanvas);
                     }
-                    var alphaTex = spriteWithCanvas ? CutImageWithCanvas(m_Sprite, m_AlphaTexture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw) : CutImage(m_Sprite, m_AlphaTexture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw);
+                    var alphaTex = CutImageWithCanvas(m_Sprite, m_AlphaTexture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw, spriteWithCanvas);
 
                     switch (spriteMaskMode)
                     {
@@ -57,9 +55,7 @@ namespace AssetStudio
                 }
                 else if (m_Sprite.m_RD.texture.TryGet(out m_Texture2D))
                 {
-                    return spriteWithCanvas ?
-                        CutImageWithCanvas(m_Sprite, m_Texture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw) :
-                        CutImage(m_Sprite, m_Texture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw);
+                    return CutImageWithCanvas(m_Sprite, m_Texture2D, m_Sprite.m_RD.textureRect, m_Sprite.m_RD.textureRectOffset, m_Sprite.m_RD.downscaleMultiplier, m_Sprite.m_RD.settingsRaw, spriteWithCanvas);
                 }
             }
             return null;
@@ -192,17 +188,25 @@ namespace AssetStudio
             return null;
         }
 
-        private static Image<Bgra32> CutImageWithCanvas(Sprite m_Sprite, Texture2D m_Texture2D, Rectf textureRect, Vector2 textureRectOffset, float downscaleMultiplier, SpriteSettings settingsRaw)
+        private static Image<Bgra32> CutImageWithCanvas(Sprite m_Sprite, Texture2D m_Texture2D, Rectf textureRect, Vector2 textureRectOffset, float downscaleMultiplier, SpriteSettings settingsRaw, bool spriteWithCanvas = false)
         {
             var cropped = CutImage(m_Sprite, m_Texture2D, textureRect, textureRectOffset, downscaleMultiplier, settingsRaw);
-            if (cropped == null)
-                return null;
+            if (cropped != null)
+            {
+                if (spriteWithCanvas)
+                {
+                    var canvas = new Image<Bgra32>((int)MathF.Floor(m_Sprite.m_Rect.width), (int)MathF.Floor(m_Sprite.m_Rect.height));
+                    canvas.Mutate(ctx => ctx.DrawImage(cropped, new Point((int)MathF.Floor(textureRectOffset.X), (int)MathF.Floor(m_Sprite.m_Rect.height - textureRectOffset.Y - cropped.Height)), 1f));
 
-            var canvas = new Image<Bgra32>((int)MathF.Floor(m_Sprite.m_Rect.width), (int)MathF.Floor(m_Sprite.m_Rect.height));
-            canvas.Mutate(ctx => ctx.DrawImage(cropped, new Point((int)MathF.Floor(textureRectOffset.X), (int)MathF.Floor(m_Sprite.m_Rect.height - textureRectOffset.Y - cropped.Height)), 1f));
-
-            cropped.Dispose();
-            return canvas;
+                    cropped.Dispose();
+                    return canvas;
+                }
+                else
+                {
+                    return cropped;
+                }
+            }
+            return null;
         }
 
         private static Vector2[][] GetTriangles(SpriteRenderData m_RD)
