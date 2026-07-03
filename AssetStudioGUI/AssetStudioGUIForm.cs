@@ -148,6 +148,7 @@ namespace AssetStudioGUI
             useAssetLoadingViaTypetreeToolStripMenuItem.Checked = Properties.Settings.Default.useTypetreeLoading;
             useDumpTreeViewToolStripMenuItem.Checked = Properties.Settings.Default.useDumpTreeView;
             autoPlayAudioAssetsToolStripMenuItem.Checked = Properties.Settings.Default.autoplayAudio;
+            spriteWithCanvasToolStripMenuItem.Checked = Properties.Settings.Default.spriteWithCanvas;
             meshLazyLoadToolStripMenuItem.Checked = Properties.Settings.Default.meshLazyLoad;
             customBlockCompressionComboBox.SelectedIndex = 0;
             customBlockInfoCompressionComboBox.SelectedIndex = 0;
@@ -970,7 +971,7 @@ namespace AssetStudioGUI
                 var bitmap = new DirectBitmap(image);
                 image.Dispose();
 
-                assetItem.InfoText = 
+                assetItem.InfoText =
                     $"Width: {m_Texture2D.m_Width}" +
                     $"\nHeight: {m_Texture2D.m_Height}" +
                     $"\nFormat: {m_Texture2D.m_TextureFormat}";
@@ -1178,7 +1179,7 @@ namespace AssetStudioGUI
             _ = system.getMasterChannelGroup(out var channelGroup);
             result = system.playSound(sound, channelGroup, paused, out channel);
             if (ERRCHECK(result)) return;
-            if (!paused) 
+            if (!paused)
             {
                 timer.Start();
             }
@@ -1478,7 +1479,8 @@ namespace AssetStudioGUI
 
         private void PreviewSprite(AssetItem assetItem, Sprite m_Sprite)
         {
-            var image = m_Sprite.GetImage(spriteMaskMode: spriteMaskVisibleMode);
+            var spriteWithCanvas = Properties.Settings.Default.spriteWithCanvas;
+            var image = m_Sprite.GetImage(spriteMaskMode: spriteMaskVisibleMode, spriteWithCanvas: spriteWithCanvas);
             if (image != null)
             {
                 var bitmap = new DirectBitmap(image);
@@ -2030,7 +2032,7 @@ namespace AssetStudioGUI
                         var regexOptions = RegexOptions.IgnoreCase | RegexOptions.Singleline;
                         try
                         {
-                            visibleAssets = mode == ListSearchFilterMode.RegexName 
+                            visibleAssets = mode == ListSearchFilterMode.RegexName
                                 ? visibleAssets.FindAll(x => Regex.IsMatch(x.Text, pattern, regexOptions))
                                 : visibleAssets.FindAll(x => Regex.IsMatch(x.SubItems[1].Text, pattern, regexOptions));
 
@@ -2691,6 +2693,12 @@ namespace AssetStudioGUI
         private void autoPlayAudioAssetsToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.autoplayAudio = autoPlayAudioAssetsToolStripMenuItem.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void spriteWithCanvasToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.spriteWithCanvas = spriteWithCanvasToolStripMenuItem.Checked;
             Properties.Settings.Default.Save();
         }
 

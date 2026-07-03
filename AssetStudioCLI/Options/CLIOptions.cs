@@ -130,6 +130,7 @@ namespace AssetStudioCLI.Options
         public static Option<bool> f_avoidLoadingViaTypetree;
         public static Option<bool> f_rawByteArrayFromMono;
         public static Option<bool> f_loadAllAssets;
+        public static Option<bool> f_spriteWithCanvas;
 
         static CLIOptions()
         {
@@ -286,7 +287,7 @@ namespace AssetStudioCLI.Options
                 optionExample: "Example: \"--log-level warning\"\n",
                 optionHelpGroup: HelpGroups.Logger
             );
-            o_logOutput = new GroupedOption<LogOutputMode> 
+            o_logOutput = new GroupedOption<LogOutputMode>
             (
                 optionDefaultValue: LogOutputMode.Console,
                 optionName: "--log-output <value>",
@@ -350,9 +351,9 @@ namespace AssetStudioCLI.Options
             (
                 optionDefaultValue: false,
                 optionName: "--l2d-search-by-filename",
-                optionDescription: "(Flag) If specified, Studio will search for model-related Live2D assets by file name\n" + 
+                optionDescription: "(Flag) If specified, Studio will search for model-related Live2D assets by file name\n" +
                     "rather than by container\n" +
-                    "(Preferred option if all l2d assets of a single model are stored in a single file\n" + 
+                    "(Preferred option if all l2d assets of a single model are stored in a single file\n" +
                     "or containers are obfuscated)\n",
                 optionExample: "",
                 optionHelpGroup: HelpGroups.Live2D,
@@ -393,7 +394,7 @@ namespace AssetStudioCLI.Options
             (
                 optionDefaultValue: AnimationExportMode.Auto,
                 optionName: "--fbx-animation",
-                optionDescription: "Specify the FBX animation export mode\n" + 
+                optionDescription: "Specify the FBX animation export mode\n" +
                     "<Value: auto(default) | skip | all>\n" +
                     "Auto - Search for model-related animations and export model with them\n" +
                     "Skip - Don't export animations\n" +
@@ -468,7 +469,7 @@ namespace AssetStudioCLI.Options
             (
                 optionDefaultValue: CompressionType.Auto,
                 optionName: "--blockinfo-comp <value>",
-                optionDescription: "Specify the compression type of bundle's blockInfo data\n" + 
+                optionDescription: "Specify the compression type of bundle's blockInfo data\n" +
                     "<Value: auto(default) | zstd | oodle | lz4 | lzma>\n" +
                     "Auto - Use compression type specified in an asset bundle\n" +
                     "Zstd - Try to decompress as zstd archive\n" +
@@ -572,6 +573,15 @@ namespace AssetStudioCLI.Options
                 optionDefaultValue: false,
                 optionName: "--load-all",
                 optionDescription: "(Flag) If specified, Studio will load assets of all types\n(Only for Dump, Info and ExportRaw modes)",
+                optionExample: "",
+                optionHelpGroup: HelpGroups.Advanced,
+                isFlag: true
+            );
+            f_spriteWithCanvas = new GroupedOption<bool>
+            (
+                optionDefaultValue: false,
+                optionName: "--sprite-with-canvas",
+                optionDescription: "(Flag) If specified, If specified, the exported sprite will include the entire canvas size instead of only the cropped section",
                 optionExample: "",
                 optionHelpGroup: HelpGroups.Advanced,
                 isFlag: true
@@ -775,6 +785,10 @@ namespace AssetStudioCLI.Options
                                 ShowOptionDescription(f_loadAllAssets, isFlag: true);
                                 return;
                         }
+                        break;
+                    case "--sprite-with-canvas":
+                        f_spriteWithCanvas.Value = true;
+                        flagIndexes.Add(i);
                         break;
                 }
             }
@@ -1067,35 +1081,35 @@ namespace AssetStudioCLI.Options
                             }
                             break;
                         case "--fbx-scale-factor":
-                        {
-                            var isFloat = float.TryParse(value, out var floatValue);
-                            if (isFloat && floatValue >= 0 && floatValue <= 100)
                             {
-                                o_fbxScaleFactor.Value = floatValue;
+                                var isFloat = float.TryParse(value, out var floatValue);
+                                if (isFloat && floatValue >= 0 && floatValue <= 100)
+                                {
+                                    o_fbxScaleFactor.Value = floatValue;
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"{"Error".Color(brightRed)} during parsing [{option.Color(brightYellow)}] option. Unsupported scale factor value: [{value.Color(brightRed)}].\n");
+                                    ShowOptionDescription(o_fbxScaleFactor);
+                                    return;
+                                }
+                                break;
                             }
-                            else
-                            {
-                                Console.WriteLine($"{"Error".Color(brightRed)} during parsing [{option.Color(brightYellow)}] option. Unsupported scale factor value: [{value.Color(brightRed)}].\n");
-                                ShowOptionDescription(o_fbxScaleFactor);
-                                return;
-                            }
-                            break;
-                        }
                         case "--fbx-bone-size":
-                        {
-                            var isInt = int.TryParse(value, out var intValue);
-                            if (isInt && intValue >= 0 && intValue <= 100)
                             {
-                                o_fbxBoneSize.Value = intValue;
+                                var isInt = int.TryParse(value, out var intValue);
+                                if (isInt && intValue >= 0 && intValue <= 100)
+                                {
+                                    o_fbxBoneSize.Value = intValue;
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"{"Error".Color(brightRed)} during parsing [{option.Color(brightYellow)}] option. Unsupported bone size value: [{value.Color(brightRed)}].\n");
+                                    ShowOptionDescription(o_fbxBoneSize);
+                                    return;
+                                }
+                                break;
                             }
-                            else
-                            {
-                                Console.WriteLine($"{"Error".Color(brightRed)} during parsing [{option.Color(brightYellow)}] option. Unsupported bone size value: [{value.Color(brightRed)}].\n");
-                                ShowOptionDescription(o_fbxBoneSize);
-                                return;
-                            }
-                            break;
-                        }
                         case "--fbx-animation":
                             switch (value.ToLower())
                             {
@@ -1165,28 +1179,28 @@ namespace AssetStudioCLI.Options
                             }
                             break;
                         case "--max-export-tasks":
-                        {
-                            var processorCount = Environment.ProcessorCount;
-                            if (value.ToLower() == "max")
                             {
-                                o_maxParallelExportTasks.Value = processorCount - 1;
-                            }
-                            else
-                            {
-                                var isInt = int.TryParse(value, out var intValue);
-                                if (isInt && intValue >= 0 && intValue <= processorCount)
+                                var processorCount = Environment.ProcessorCount;
+                                if (value.ToLower() == "max")
                                 {
-                                    o_maxParallelExportTasks.Value = Math.Min(intValue, processorCount - 1);
+                                    o_maxParallelExportTasks.Value = processorCount - 1;
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"{"Error".Color(brightRed)} during parsing [{option.Color(brightYellow)}] option. Unsupported number of parallel tasks: [{value.Color(brightRed)}].\n");
-                                    ShowOptionDescription(o_maxParallelExportTasks);
-                                    return;
+                                    var isInt = int.TryParse(value, out var intValue);
+                                    if (isInt && intValue >= 0 && intValue <= processorCount)
+                                    {
+                                        o_maxParallelExportTasks.Value = Math.Min(intValue, processorCount - 1);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"{"Error".Color(brightRed)} during parsing [{option.Color(brightYellow)}] option. Unsupported number of parallel tasks: [{value.Color(brightRed)}].\n");
+                                        ShowOptionDescription(o_maxParallelExportTasks);
+                                        return;
+                                    }
                                 }
+                                break;
                             }
-                            break;
-                        }
                         case "--export-asset-list":
                             switch (value.ToLower())
                             {
@@ -1407,7 +1421,7 @@ namespace AssetStudioCLI.Options
         {
             var unityVer = o_unityVersion.Value?.ToString();
             unityVer = string.IsNullOrEmpty(unityVer) ? "ReadFromAsset" : unityVer;
-            
+
             var sb = new StringBuilder();
             sb.AppendLine("[Current Options]");
             sb.AppendLine($"# Working Mode: {o_workMode}");

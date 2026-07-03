@@ -21,7 +21,7 @@ AssetStudioModCLI <input path to asset file(s)/folder> [-m, --mode <value>]
                       [--export-asset-list <value>] [--assembly-folder <path>]
                       [--unity-version <text>] [--decompress-to-disk]
                       [--not-restore-extension] [--ignore-typetree]
-                      [--load-all]
+                      [--load-all] [--sprite-with-canvas]
 
 General Options:
   -m, --mode <value>            Specify working mode
@@ -197,4 +197,6 @@ Advanced Options:
 
   --load-all                    (Flag) If specified, Studio will load assets of all types
                                 (Only for Dump, Info and ExportRaw modes)
+
+  --sprite-with-canvas          (Flag) If specified, the exported sprite will include the entire canvas size instead of only the cropped section
 ```
